@@ -36,27 +36,24 @@ MAX_SIZE_IMAGE = 50 * 1024 * 1024
 
 @app.route('/detect', methods=['POST'])
 def detect():
+
+    validate_image = validate_request_image(request)
     
-    if not request.files["image"]:
-        data = {"erro:": "é necessário enviar uma imagem para a análise", 
-                "code": http.HTTPStatus.UNPROCESSABLE_ENTITY}
-        
-        return jsonify(data), 422
-        
+    if validate_image:
+        return validate_image
+    
     file = request.files['image']
     
-    if not file.filename.endswith((".png", ".jpeg", ".jpg")):
-            print(file.filename)
-            data = {"erro":f"extensão da imagem é inválida. São aceitas apenas imagens com extensões {EXTENSIONS_IMAGE_ACEPT}",
-                    "code": http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE}
-            return jsonify(data), http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE
+    validate_image = validate_image_extension(file)
+    
+    if validate_image:
+        return validate_image
     
     try:
-    #BytesIO trasforma a imagem em um fluxo de bytes na memoria. assim, não é preciso salvar a imagem no host
-        img = Image.open(io.BytesIO(file.read()))
+        img = convert_image_for_bytes_in_memory_and_open(file)
     except:
         data = {"erro": "imagem corrompida ou no formato incorreto", "code":http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE}
-        return jsonify(data, http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE)
+        return jsonify(data), http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE
     
     #Aqui será a imagem sera processada por um modelo YOLO que foi definido acima
     results = model(img)
@@ -86,6 +83,30 @@ def detect():
     except: 
         data = {"erro":"erro interno no servidor", "code":http.HTTPStatus.INTERNAL_SERVER_ERROR}
         return jsonify, http.HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+
+def validate_request_image(request_file):
+    if not request_file.files["image"]:
+        data = {"erro:": "é necessário enviar uma imagem para a análise", 
+                "code": http.HTTPStatus.UNPROCESSABLE_ENTITY}  
+        return jsonify(data), http.HTTPStatus.UNPROCESSABLE_ENTITY
+    return None
+    
+    
+def validate_image_extension(file):
+    if not file.filename.endswith((".png", ".jpeg", ".jpg")):
+        print(file.filename)
+        data = {"erro":f"extensão da imagem é inválida. São aceitas apenas imagens com extensões {EXTENSIONS_IMAGE_ACEPT}",
+                "code": http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE}
+        return jsonify(data), http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE
+    return None
+    
+    
+def convert_image_for_bytes_in_memory_and_open(file):
+    #BytesIO trasforma a imagem em um fluxo de bytes na memoria. assim, não é preciso salvar a imagem no host
+    img = Image.open(io.BytesIO(file.read()))
+    return img    
 
 if __name__ == '__main__':
     app.run(debug=True, port=6000)
