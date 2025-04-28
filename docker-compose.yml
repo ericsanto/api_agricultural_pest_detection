@@ -1,0 +1,6 @@
+services:
+  flask_app:
+    build: .
+    ports:
+      - "6000:6000"
+    
