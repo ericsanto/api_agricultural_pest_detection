@@ -121,7 +121,7 @@ def detect_plant_disease():
 
     predicted_class_idx = logits.argmax(-1).item()
     print("Predicted class:", model.config.id2label[predicted_class_idx])
-    return jsonify({"Predicted class": model.config.id2label[predicted_class_idx]})
+    return jsonify({"disease": model.config.id2label[predicted_class_idx]})
 
 
 if __name__ == '__main__':
