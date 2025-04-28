@@ -5,7 +5,9 @@ Esta é uma API REST baseada em Flask que utiliza um modelo YOLO pré-treinado d
 
 ## Créditos
 
-O modelo YOLO utilizado nesta aplicação foi desenvolvido por [Yudsky](https://huggingface.co/Yudsky/pest-detection-yolo11/tree/main) e está disponível no [Hugging Face](https://huggingface.co/Yudsky/pest-detection-yolo11/tree/main). Agradecemos ao autor por disponibilizar o modelo pré-treinado.
+O modelo YOLO de detecção de pragas utilizado nesta aplicação foi desenvolvido por [Yudsky](https://huggingface.co/Yudsky/pest-detection-yolo11/tree/main) e está disponível no [Hugging Face](https://huggingface.co/Yudsky/pest-detection-yolo11/tree/main). Agradecemos ao autor por disponibilizar o modelo pré-treinado.
+
+o modelo para detecção de doeças de plantas utilizado nessa aplicação foi desenvolvido por Diginsa(https://huggingface.co/Diginsa) e está disponível no [Huggin Face](https://huggingface.co/Diginsa/Plant-Disease-Detection-Project). Agradecemos ao autor por disponibilizar o modelo pré-treinado
 
 ## Funcionalidades
 
@@ -45,9 +47,9 @@ A aplicação estará acessível em `http://localhost:6000`.
 
 ## Documentação da API
 
-### Endpoint
+### Endpoints
 
-#### `POST /detect`
+#### `POST /detect-plant-pest`
 
 Este endpoint aceita um arquivo de imagem, processa-o usando o modelo YOLO e retorna uma lista de pragas detectadas junto com seus níveis de confiança.
 
@@ -58,7 +60,7 @@ Este endpoint aceita um arquivo de imagem, processa-o usando o modelo YOLO e ret
 
 Exemplo de Requisição:
 ```bash
-curl -X POST -F "image=@caminho/para/sua/imagem.jpg" http://localhost:6000/detect
+curl -X POST -F "image=@caminho/para/sua/imagem.jpg" http://localhost:6000/detect-plant-pest
 ```
 
 ##### Resposta
@@ -84,6 +86,34 @@ Exemplo de Resposta:
       "hit_percentage_formated": "88%"
     }
   ]
+}
+```
+
+
+#### `POST /detect-plant-disease`
+
+Este endpoint aceita um arquivo de imagem, processa-o usando o modelo pre treinado e retorna uma a doença da planta detectada
+
+##### Requisição
+
+- **Content-Type**: `multipart/form-data`
+- **Body**: A requisição deve incluir um arquivo de imagem nos dados do formulário. A imagem deve estar em um dos seguintes formatos: `.jpg`, `.jpeg` ou `.png`.
+
+Exemplo de Requisição:
+```bash
+curl -X POST -F "image=@caminho/para/sua/imagem.jpg" http://localhost:6000/detect-plant-disease
+```
+
+##### Resposta
+
+A resposta será um objeto JSON contendo a doença detectada
+
+- **Status 200 OK**: Os resultados da detecção foram processados com sucesso.
+
+Exemplo de Resposta:
+```json
+{
+  "disease": "Corn (maize) Cercospora leaf spot Gray leaf spot"
 }
 ```
 
@@ -127,9 +157,21 @@ Exemplo de Resposta de Erro:
 }
 ```
 
-## Testando Localmente
+## Testando Localmente em ambiente Linux
 
-Se você quiser testar localmente, basta rodar a aplicação Flask diretamente:
+Se você quiser testar localmente, basta rodar a aplicação Flask diretamente, siga os seguintes comandos:
+
+```bash
+python -m venv venv
+```
+
+```bash
+source venv/bin/activate
+```
+
+```bash
+pip install -r requirements.txt
+```
 
 ```bash
 python app.py
