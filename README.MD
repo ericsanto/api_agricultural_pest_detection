@@ -3,6 +3,10 @@
 
 Esta é uma API REST baseada em Flask que utiliza um modelo YOLO pré-treinado do HugginFace para detectar pragas em imagens enviadas pelos usuários. O modelo foi treinado com imagens de várias pragas que afetam as lavouras de arroz e retorna informações sobre as pragas detectadas com uma pontuação de confiança.
 
+## Créditos
+
+O modelo YOLO utilizado nesta aplicação foi desenvolvido por [Yudsky](https://huggingface.co/Yudsky/pest-detection-yolo11/tree/main) e está disponível no [Hugging Face](https://huggingface.co/Yudsky/pest-detection-yolo11/tree/main). Agradecemos ao autor por disponibilizar o modelo pré-treinado.
+
 ## Funcionalidades
 
 - Aceita o envio de imagens (formatos JPEG, PNG, JPG).
