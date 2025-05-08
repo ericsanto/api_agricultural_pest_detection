@@ -6,9 +6,12 @@ from validate.validate_image import validate_image_extension, validate_request_i
 import os
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 app = Flask(__name__)
+
+
 model = YOLO("best.pt")
 
 # Lista de nomes das classes que fazem parte do modelo YOLO para detacção de pragas
@@ -125,4 +128,4 @@ def detect_plant_disease():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=6000)
+    app.run(debug=True, host="0.0.0.0", port=8000)
